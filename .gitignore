@@ -1,0 +1,28 @@
+# Compiled binaries
+ls
+myls
+*.exe
+
+# Object files
+*.o
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Editor backup files
+*~
+*.swp
+*.swo
+.DS_Store
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Build directory (if any)
+build/
+bin/
