@@ -4,9 +4,29 @@ Lập trình lệnh `ls(1)` của UNIX từ đầu như một bài tập giữa 
 
 ## Thông Tin Tác Giả
 
-- **Tên dự án**: Lệnh ls Đơn Giản Hóa
-- **Môn học**: Lập Trình Hệ Thống UNIX
-- **Loại**: Bài Tập Giữa Kỳ
+- **Sinh viên:** Nguyễn Kim Thạch
+- **MSSV:** 24IT239
+- **Môn học:** Lập trình hệ thống UNIX
+- **GitHub:** https://github.com/minighost212/nguyenkimthach_24IT239_midterm
+
+## Yêu Cầu Hệ Thống
+- **Hệ điều hành**: NetBSD, Linux, hoặc các hệ UNIX-like khác
+- **Compiler**: GCC hoặc Clang hỗ trợ C99
+- **Build tool**: make hoặc gmake
+- **Git**: Để clone repository
+
+## 🚀 Cài Đặt và Sử Dụng
+
+```bash
+git clone https://github.com/minighost212/nguyenkimthach_24IT239_midterm.git
+cd nguyenkimthach_24IT239_midterm
+make                                    # biên dịch chương trình (hoặc: gmake)
+./ls                                    # liệt kê thư mục hiện tại
+./ls -l                                 # xem danh sách chi tiết
+./ls -laF                               # all files + long format + indicators
+```
+
+
 
 ## Cấu Trúc Dự Án
 
@@ -30,38 +50,27 @@ Lập trình lệnh `ls(1)` của UNIX từ đầu như một bài tập giữa 
 
 Bản cài đặt này hỗ trợ các tùy chọn sau theo trang manual được cung cấp:
 
-### Tùy Chọn Hiển Thị
-- **Mặc định**: Liệt kê file mỗi file một dòng
-- **`-l`**: Định dạng liệt kê dài (quyền, liên kết, chủ sở hữu, nhóm, kích thước, thời gian, tên)
-- **`-n`**: Giống `-l`, nhưng hiển thị UID và GID dạng số
-
-### Lọc File
-- **`-a`**: Bao gồm các entry bắt đầu với `.` (file ẩn)
-- **`-A`**: Liệt kê tất cả entry trừ `.` và `..`
-- **`-d`**: Liệt kê thư mục như file thông thường (không liệt kê nội dung)
-
-### Tùy Chọn Sắp Xếp
-- **Mặc định**: Thứ tự từ điển (lexicographical)
-- **`-t`**: Sắp xếp theo thời gian sửa đổi (mới nhất trước)
-- **`-S`**: Sắp xếp theo kích thước file (lớn nhất trước)
-- **`-r`**: Đảo ngược thứ tự sắp xếp
-- **`-f`**: Không sắp xếp (kéo theo `-a`)
-
-### Tùy Chọn Thời Gian
-- **`-c`**: Sử dụng thời gian thay đổi trạng thái cuối cùng (với `-t` hoặc `-l`)
-- **`-u`**: Sử dụng thời gian truy cập cuối cùng (với `-t` hoặc `-l`)
-
-### Cải Tiến Hiển Thị
-- **`-F`**: Thêm ký hiệu vào entry (`/` cho thư mục, `*` cho file thực thi, `@` cho symlink, v.v.)
-- **`-i`**: In số inode trước mỗi entry
-- **`-s`**: In số lượng block trước mỗi entry
-- **`-h`**: Kích thước file dễ đọc (với `-l` hoặc `-s`)
-- **`-k`**: Báo cáo kích thước tính bằng kilobyte
-
-### Tùy Chọn Khác
-- **`-R`**: Liệt kê đệ quy các thư mục con
-- **`-q`**: In `?` cho các ký tự không in được (mặc định khi output là terminal)
-- **`-w`**: In các ký tự không in được ở dạng thô
+| Option | Chức năng |
+|--------|-----------|
+| `-A` | Liệt kê mọi entry trừ `.` và `..` |
+| `-a` | Bao gồm cả entry bắt đầu bằng `.` |
+| `-c` | Dùng thời gian đổi trạng thái (ctime) để sắp xếp (`-t`) hoặc in (`-l`) |
+| `-d` | Thư mục được liệt kê như file thường; symlink & operand không bị đi xuyên qua |
+| `-F` | Thêm ký hiệu: `/` thư mục, `*` thực thi, `@` symlink, `%` whiteout, `=` socket, `|` FIFO |
+| `-f` | Không sắp xếp |
+| `-h` | Với `-s` / `-l`: kích thước dạng dễ đọc (K, M, G...). Ghi đè `-k` |
+| `-i` | In số inode |
+| `-k` | Kích thước tính bằng kilobyte |
+| `-l` | Định dạng dài (quyền, link, owner, group, size, time, name) |
+| `-n` | Như `-l` nhưng hiển thị UID/GID dạng số |
+| `-q` | In `?` cho ký tự không in được |
+| `-R` | Liệt kê đệ quy thư mục con |
+| `-r` | Đảo ngược thứ tự sắp xếp |
+| `-S` | Sắp xếp theo kích thước file |
+| `-s` | Hiển thị số block được dùng |
+| `-t` | Sắp xếp theo thời gian sửa đổi (mới nhất trước) |
+| `-u` | Dùng thời gian truy cập (atime) thay vì thời gian sửa đổi (mtime) |
+| `-w` | In ký tự không in được nguyên dạng |
 
 ## Biên Dịch Dự Án
 
@@ -71,35 +80,14 @@ Bản cài đặt này hỗ trợ các tùy chọn sau theo trang manual đượ
 - Tiện ích Make (GNU Make khuyến nghị cho NetBSD)
 - Hệ điều hành giống UNIX (NetBSD, Linux, macOS, BSD)
 
-### Biên Dịch
-
-```bash
-# Build dự án
-make
-
-# Hoặc một cách rõ ràng
-make all
-```
-
-Lệnh này sẽ tạo file thực thi tên `ls` trong thư mục hiện tại.
-
 ### Các Target Make Khác
 
 ```bash
-# Xóa các artifact build
-make clean
-
-# Deep clean (bao gồm cả file backup)
-make distclean
-
-# Rebuild từ đầu
-make rebuild
-
-# Chạy test cơ bản
-make test
-
-# Hiển thị tất cả target có sẵn
-make help
+make clean                              # xóa các artifact build
+make distclean                          # deep clean (bao gồm cả file backup)
+make rebuild                            # rebuild từ đầu
+make test                               # chạy test cơ bản
+make help                               # hiển thị tất cả target có sẵn
 ```
 
 ## Cách Sử Dụng
@@ -119,228 +107,56 @@ Sau khi build thành công bằng `make`, bạn có file thực thi `ls` trong t
 
 ### Cú Pháp Cơ Bản
 
-```
-./ls [TÙY_CHỌN]... [FILE]...
-```
-
 ### Sử Dụng Cơ Bản
 
-#### 1. Liệt kê thư mục hiện tại
 ```bash
-./ls
+./ls                                    # liệt kê thư mục hiện tại
+./ls /etc                               # liệt kê thư mục cụ thể
+./ls /tmp                               # liệt kê thư mục /tmp
+./ls ~/Documents                        # liệt kê thư mục trong home
+./ls README.md                          # liệt kê một file cụ thể
+./ls /bin/ls                            # liệt kê file hệ thống
+./ls Makefile README.md src include     # liệt kê nhiều đường dẫn
+./ls file1.txt /tmp /etc file2.txt      # mix files và directories (files hiển thị trước)
 ```
 
-#### 2. Liệt kê file hoặc thư mục cụ thể
-```bash
-./ls /etc
-./ls /tmp
-./ls ~/Documents
-```
-
-#### 3. Liệt kê một file cụ thể
-```bash
-./ls README.md
-./ls /bin/ls
-```
-
-#### 4. Liệt kê nhiều đường dẫn
-```bash
-./ls Makefile README.md src include
-./ls file1.txt /tmp /etc file2.txt
-```
-**Lưu ý**: Files sẽ hiển thị trước, sau đó đến directories (theo spec NetBSD)
-
-### Các Tùy Chọn Phổ Biến
-
-#### Định Dạng Hiển Thị
+### Ví Dụ Sử Dụng
 
 ```bash
-# Định dạng dài (long format) - hiển thị chi tiết
-./ls -l
-
-# Định dạng dài với UID/GID dạng số
-./ls -n
-
-# Hiển thị file ẩn (bắt đầu với .)
-./ls -a
-
-# Hiển thị tất cả trừ . và ..
-./ls -A
-
-# Thêm ký hiệu loại file (/ * @ = |)
-./ls -F
-```
-
-#### Sắp Xếp
-
-```bash
-# Sắp xếp theo thời gian (mới nhất trước)
-./ls -t
-
-# Sắp xếp theo kích thước (lớn nhất trước)
-./ls -S
-
-# Đảo ngược thứ tự sắp xếp
-./ls -r
-
-# Không sắp xếp (theo thứ tự trong directory)
-./ls -f
-```
-
-#### Kích Thước File
-
-```bash
-# Kích thước dễ đọc (K, M, G)
-./ls -lh
-
-# Kích thước tính bằng kilobytes
-./ls -lk
-
-# Hiển thị số block
-./ls -s
-```
-
-#### Thông Tin Bổ Sung
-
-```bash
-# Hiển thị số inode
-./ls -i
-
-# Hiển thị block count
-./ls -s
-
-# Kết hợp inode + blocks + long format
-./ls -lis
-```
-
-#### Liệt Kê Đặc Biệt
-
-```bash
-# Liệt kê đệ quy (bao gồm thư mục con)
-./ls -R
-
-# Liệt kê thư mục như file (không vào trong)
-./ls -ld /etc
-./ls -ld */
-```
-
-#### Thời Gian
-
-```bash
-# Sử dụng access time (atime)
-./ls -lu
-
-# Sử dụng change time (ctime)
-./ls -lc
-
-# Sắp xếp theo atime
-./ls -ltu
-
-# Sắp xếp theo ctime
-./ls -ltc
-```
-
-### Ví Dụ Kết Hợp
-
-```bash
-# Long format + all files + human readable
-./ls -lah
-
-# Long format + sort by time + reverse
-./ls -ltr
-
-# Long format + sort by size + human readable
-./ls -lSh
-
-# All files + recursive + with indicators
-./ls -aRF
-
-# Inode + long format + sort by size
-./ls -ilS
-
-# All options combined (stress test)
-./ls -ailshRFnrtScuw
-```
-
-### Ví Dụ Thực Tế
-
-#### Xem file log mới nhất
-```bash
-./ls -lt /var/log | head
-```
-
-#### Tìm file lớn nhất
-```bash
-./ls -lSh /tmp | head
-```
-
-#### Xem tất cả file kể cả ẩn
-```bash
-./ls -la
-```
-
-#### Xem cấu trúc thư mục đầy đủ
-```bash
-./ls -R
-```
-
-#### So sánh thời gian giữa các file
-```bash
-./ls -lt *.c
-```
-
-#### Kiểm tra quyền truy cập chi tiết
-```bash
-./ls -l /etc/passwd
-```
-
-#### Xem symlink trỏ đến đâu
-```bash
-./ls -l /bin/sh
-```
-
-### Ghi Chú Quan Trọng
-
-#### Phân Biệt Với ls Hệ Thống
-
-```bash
-./ls         # Chạy chương trình của BẠN
-ls           # Chạy /bin/ls (hệ thống)
-/bin/ls      # Chạy ls hệ thống (rõ ràng)
-```
-
-#### Options Override (cái cuối thắng)
-
-```bash
-./ls -ln     # -n thắng: hiển thị numeric UID/GID
-./ls -nl     # -l thắng: hiển thị user/group names
-
-./ls -cu     # -u thắng: dùng atime
-./ls -uc     # -c thắng: dùng ctime
-
-./ls -kh     # -h thắng: human readable
-./ls -hk     # -k thắng: kilobytes
-
-./ls -Rd .   # -d thắng: list . như file
-./ls -dR .   # -R thắng: recursive
-```
-
-#### Xử Lý Lỗi
-
-```bash
-# File không tồn tại
-./ls /nonexistent
-# Output: ls: /nonexistent: No such file or directory
-# Exit code: > 0
-
-# Permission denied
-./ls /root
-# Output: ls: /root: Permission denied
-# Exit code: > 0
-
-# Success
-./ls README.md
-# Exit code: 0
+./ls                        # thư mục hiện tại
+./ls -l                     # định dạng dài
+./ls -n                     # định dạng dài với UID/GID dạng số
+./ls -a                     # hiển thị file ẩn (bắt đầu với .)
+./ls -A                     # hiển thị tất cả trừ . và ..
+./ls -F                     # thêm ký hiệu loại file (/ * @ = |)
+./ls -t                     # sắp xếp theo thời gian (mới nhất trước)
+./ls -S                     # sắp xếp theo kích thước (lớn nhất trước)
+./ls -r                     # đảo ngược thứ tự sắp xếp
+./ls -f                     # không sắp xếp (theo thứ tự trong directory)
+./ls -lh                    # kích thước dễ đọc (K, M, G)
+./ls -lk                    # kích thước tính bằng kilobytes
+./ls -s                     # hiển thị số block
+./ls -i                     # hiển thị số inode
+./ls -lis                   # kết hợp inode + blocks + long format
+./ls -R                     # liệt kê đệ quy (bao gồm thư mục con)
+./ls -ld /etc               # liệt kê thư mục như file (không vào trong)
+./ls -ld */                 # liệt kê tất cả thư mục như file
+./ls -lu                    # sử dụng access time (atime)
+./ls -lc                    # sử dụng change time (ctime)
+./ls -ltu                   # sắp xếp theo atime
+./ls -ltc                   # sắp xếp theo ctime
+./ls -lah                   # long format + all files + human readable
+./ls -ltr                   # long format + sort by time + reverse
+./ls -lSh                   # long format + sort by size + human readable
+./ls -aRF                   # all files + recursive + with indicators
+./ls -ilS                   # inode + long format + sort by size
+./ls -lt /var/log | head    # xem file log mới nhất
+./ls -lSh /tmp | head       # tìm file lớn nhất
+./ls -lt *.c                # so sánh thời gian giữa các file
+./ls -l /etc/passwd         # kiểm tra quyền truy cập chi tiết
+./ls -l /bin/sh             # xem symlink trỏ đến đâu
+./ls Makefile src           # mix files và directories: file in trước
+./ls /nonexistent           # báo lỗi, exit code > 0
 ```
 
 ## Chi Tiết Cài Đặt
@@ -392,144 +208,7 @@ Test suite sẽ kiểm tra:
 - ✅ Không segfault với input lớn
 - ✅ So sánh với ls hệ thống
 
-### Kiểm Thử Thủ Công
 
-#### Test Cơ Bản
-
-```bash
-# 1. Test không tham số
-./ls
-
-# 2. Test với file cụ thể
-./ls README.md
-
-# 3. Test với directory
-./ls /etc
-
-# 4. Test với multiple paths
-./ls README.md src Makefile
-```
-
-#### Test Options
-
-```bash
-# 5. Test long format
-./ls -l
-
-# 6. Test hidden files
-./ls -a
-./ls -A
-
-# 7. Test sorting
-./ls -t    # by time
-./ls -S    # by size
-./ls -r    # reverse
-
-# 8. Test recursive
-./ls -R src
-
-# 9. Test indicators
-./ls -F
-
-# 10. Test với -d
-./ls -ld /etc
-```
-
-#### Test Edge Cases
-
-```bash
-# 11. File không tồn tại (phải trả về lỗi)
-./ls /nonexistent
-echo $?  # Phải > 0
-
-# 12. Permission denied
-./ls /root
-echo $?  # Phải > 0
-
-# 13. Symbolic link
-./ls -l /bin/sh
-# Phải hiển thị -> target
-
-# 14. Empty directory
-mkdir /tmp/empty_test
-./ls /tmp/empty_test
-rmdir /tmp/empty_test
-
-# 15. File với spaces
-touch "/tmp/test file.txt"
-./ls "/tmp/test file.txt"
-rm "/tmp/test file.txt"
-
-# 16. Large directory (không crash)
-./ls -la /usr/bin
-
-# 17. Deep recursion (không crash)
-./ls -R /usr
-```
-
-#### Test Mix File + Directory
-
-```bash
-# 18. Mix files và directories
-# Files phải hiển thị trước, directories sau
-./ls file1.txt dir1 file2.txt dir2
-
-# Expected output:
-# file1.txt
-# file2.txt
-# 
-# dir1:
-# [contents]
-# 
-# dir2:
-# [contents]
-```
-
-#### So Sánh Với ls Hệ Thống
-
-```bash
-# So sánh output
-echo "=== System ls ==="
-/bin/ls -l
-
-echo "=== Your ls ==="
-./ls -l
-
-# So sánh với diff
-/bin/ls -l > /tmp/sys.txt
-./ls -l > /tmp/mine.txt
-diff /tmp/sys.txt /tmp/mine.txt
-```
-
-### Các Trường Hợp Đã Test
-
-✅ **Đã xử lý:**
-- Thư mục rỗng
-- Symbolic link (cả đúng và broken)
-- Device files
-- File có ký tự đặc biệt trong tên
-- File có spaces trong tên
-- Thư mục lớn (>1000 files)
-- Deep recursion
-- Permission denied
-- File/directory không tồn tại
-- Mix files và directories
-- Tất cả options và tổ hợp
-
-### Expected Exit Codes
-
-```bash
-# Success (exit 0)
-./ls README.md
-echo $?  # 0
-
-# Error (exit > 0)
-./ls /nonexistent
-echo $?  # 1 hoặc 2
-
-./ls /root  # nếu không có quyền
-echo $?  # 1 hoặc 2
-```
 
 ## Hạn Chế
 
@@ -549,16 +228,6 @@ echo $?  # 1 hoặc 2
 
 ## Build Trên Các Hệ Thống Khác Nhau
 
-### Linux
-```bash
-make
-```
-
-### macOS
-```bash
-make
-```
-
 ### NetBSD (Khuyến nghị - manual page từ NetBSD)
 ```bash
 # Cài đặt GNU make
@@ -571,39 +240,7 @@ gmake
 make
 ```
 
-### Hệ Thống BSD Khác
-```bash
-# FreeBSD
-pkg install gmake
-gmake
-
-# OpenBSD
-pkg_add gmake
-gmake
-```
-
 **Lưu ý**: Dự án dựa trên manual page NetBSD `ls(1)`. Makefile tương thích với cả GNU make và BSD make, nhưng `gmake` được khuyến nghị.
-
-## Git Repository
-
-Dự án này nên được host trong repository GitHub có tên:
-```
-Tên_MãSinhViên_midterm
-```
-
-Repository bao gồm:
-- Tất cả source code (file `.c` và `.h`)
-- Makefile
-- README.md này
-- `.gitignore` (được cấu hình để loại trừ binary và object file)
-
-## Flag Biên Dịch
-
-Makefile sử dụng các flag trình biên dịch sau:
-- `-Wall`: Bật tất cả cảnh báo thông thường
-- `-Wextra`: Bật cảnh báo bổ sung
-- `-Werror`: Coi cảnh báo như lỗi
-- `-std=c99`: Sử dụng chuẩn C99
 
 ## Giấy Phép
 
@@ -611,11 +248,10 @@ Makefile sử dụng các flag trình biên dịch sau:
 
 ## Tài Liệu Tham Khảo
 
-- Trang manual `ls(1)` của NetBSD (được cung cấp trong `a.txt`)
+- Trang manual `ls(1)` 
 - Tài liệu môn học Lập Trình Hệ Thống UNIX
 - Đặc tả POSIX.1-2008
 
 ---
 
-**Cập nhật lần cuối**: Tháng 10 năm 2026
-"# UNIX" 
+**Cập nhật lần cuối**: Tháng 10 năm 2026 
