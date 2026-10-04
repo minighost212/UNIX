@@ -26,3 +26,5 @@ myls
 # Build directory (if any)
 build/
 bin/
+a.txt 
+b.txt 

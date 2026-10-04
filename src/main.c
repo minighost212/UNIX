@@ -71,19 +71,13 @@ int parse_options(int argc, char **argv, Options *opts) {
 
 /**
  * Hàm so sánh để sắp xếp đường dẫn (thư mục vs không phải thư mục)
+ * Chỉ phân nhóm khi KHÔNG có -d
  */
 int compare_paths(const void *a, const void *b) {
     const char *path_a = *(const char **)a;
     const char *path_b = *(const char **)b;
     
-    int is_dir_a = is_directory(path_a);
-    int is_dir_b = is_directory(path_b);
-    
-    /* Không phải thư mục đứng trước thư mục */
-    if (!is_dir_a && is_dir_b) return -1;
-    if (is_dir_a && !is_dir_b) return 1;
-    
-    /* Trong cùng loại, sắp xếp theo thứ tự từ điển */
+    /* Luôn sort lexicographically */
     return strcmp(path_a, path_b);
 }
 
@@ -96,44 +90,75 @@ int process_paths(char **paths, int count, Options *opts) {
     int has_dirs = 0;
     int has_files = 0;
     
-    /* Đếm số thư mục và file */
-    for (i = 0; i < count; i++) {
-        if (is_directory(paths[i]) && opts->dir_mode != DIR_ENTRY) {
-            has_dirs++;
-        } else {
-            has_files++;
-        }
-    }
-    
-    /* Sắp xếp đường dẫn: không phải thư mục trước, sau đó đến thư mục */
-    qsort(paths, count, sizeof(char *), compare_paths);
-    
-    /* Trước tiên, hiển thị tất cả các toán hạng không phải thư mục */
-    for (i = 0; i < count; i++) {
-        if (!is_directory(paths[i]) || opts->dir_mode == DIR_ENTRY) {
+    /* Với -d, tất cả operands được coi là files, sort chung */
+    if (opts->dir_mode == DIR_ENTRY) {
+        /* Sort tất cả theo lexicographical order */
+        qsort(paths, count, sizeof(char *), compare_paths);
+        
+        /* Hiển thị tất cả như files */
+        for (i = 0; i < count; i++) {
             if (list_file(paths[i], opts) != 0) {
                 status = 1;
             }
         }
+        return status;
     }
     
-    /* Sau đó hiển thị các thư mục */
+    /* Không có -d: phân biệt files và directories */
+    /* Đếm và phân loại */
+    char **files = malloc(count * sizeof(char *));
+    char **dirs = malloc(count * sizeof(char *));
+    int file_count = 0;
+    int dir_count = 0;
+    
+    if (!files || !dirs) {
+        free(files);
+        free(dirs);
+        return 1;
+    }
+    
     for (i = 0; i < count; i++) {
-        if (is_directory(paths[i]) && opts->dir_mode != DIR_ENTRY) {
-            /* In tên thư mục nếu có nhiều toán hạng hoặc trộn file và thư mục */
-            if (count > 1 || (has_files > 0 && has_dirs > 0)) {
-                if (i > 0 || has_files > 0) {
-                    printf("\n");
-                }
-                printf("%s:\n", paths[i]);
-            }
-            
-            if (do_ls(paths[i], opts) != 0) {
-                status = 1;
-            }
+        if (is_directory(paths[i])) {
+            dirs[dir_count++] = paths[i];
+            has_dirs++;
+        } else {
+            files[file_count++] = paths[i];
+            has_files++;
         }
     }
     
+    /* Sort files và dirs riêng theo lexicographical order */
+    if (file_count > 1) {
+        qsort(files, file_count, sizeof(char *), compare_paths);
+    }
+    if (dir_count > 1) {
+        qsort(dirs, dir_count, sizeof(char *), compare_paths);
+    }
+    
+    /* Hiển thị files trước */
+    for (i = 0; i < file_count; i++) {
+        if (list_file(files[i], opts) != 0) {
+            status = 1;
+        }
+    }
+    
+    /* Sau đó hiển thị directories */
+    for (i = 0; i < dir_count; i++) {
+        /* In tên thư mục nếu có nhiều toán hạng hoặc trộn file và thư mục */
+        if (count > 1 || (has_files > 0 && has_dirs > 0)) {
+            if (i > 0 || has_files > 0) {
+                printf("\n");
+            }
+            printf("%s:\n", dirs[i]);
+        }
+        
+        if (do_ls(dirs[i], opts) != 0) {
+            status = 1;
+        }
+    }
+    
+    free(files);
+    free(dirs);
     return status;
 }
 

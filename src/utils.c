@@ -119,12 +119,13 @@ char *join_path(const char *dir, const char *name) {
 
 /**
  * Kiểm tra xem đường dẫn có phải là thư mục không
- * Sử dụng lstat() để không follow symlink
+ * Sử dụng stat() để follow symlink (hành vi mặc định của ls)
  */
 int is_directory(const char *path) {
     struct stat st;
     
-    if (lstat(path, &st) < 0) {
+    /* stat() follow symlink, phù hợp với hành vi mặc định */
+    if (stat(path, &st) < 0) {
         return 0;
     }
     
