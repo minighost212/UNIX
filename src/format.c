@@ -5,6 +5,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include "../include/ls.h"
 #include "../include/format.h"
 
