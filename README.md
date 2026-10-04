@@ -104,54 +104,243 @@ make help
 
 ## Cách Sử Dụng
 
-### Cách Sử Dụng Cơ Bản
+### Khởi Động Nhanh
+
+Sau khi build thành công bằng `make`, bạn có file thực thi `ls` trong thư mục dự án.
 
 ```bash
-# Liệt kê thư mục hiện tại
+# Chạy chương trình (PHẢI có ./ ở đầu để phân biệt với /bin/ls hệ thống)
 ./ls
 
-# Liệt kê file hoặc thư mục cụ thể
-./ls /đường/dẫn/đến/thư_mục
-
-# Liệt kê nhiều đường dẫn
-./ls file1.txt /đường/dẫn/đến/dir file2.txt
+# So sánh với ls hệ thống
+/bin/ls      # ls của NetBSD
+./ls         # ls của bạn
 ```
 
-### Ví Dụ Phổ Biến
+### Cú Pháp Cơ Bản
+
+```
+./ls [TÙY_CHỌN]... [FILE]...
+```
+
+### Sử Dụng Cơ Bản
+
+#### 1. Liệt kê thư mục hiện tại
+```bash
+./ls
+```
+
+#### 2. Liệt kê file hoặc thư mục cụ thể
+```bash
+./ls /etc
+./ls /tmp
+./ls ~/Documents
+```
+
+#### 3. Liệt kê một file cụ thể
+```bash
+./ls README.md
+./ls /bin/ls
+```
+
+#### 4. Liệt kê nhiều đường dẫn
+```bash
+./ls Makefile README.md src include
+./ls file1.txt /tmp /etc file2.txt
+```
+**Lưu ý**: Files sẽ hiển thị trước, sau đó đến directories (theo spec NetBSD)
+
+### Các Tùy Chọn Phổ Biến
+
+#### Định Dạng Hiển Thị
 
 ```bash
-# Định dạng dài với kích thước dễ đọc
+# Định dạng dài (long format) - hiển thị chi tiết
+./ls -l
+
+# Định dạng dài với UID/GID dạng số
+./ls -n
+
+# Hiển thị file ẩn (bắt đầu với .)
+./ls -a
+
+# Hiển thị tất cả trừ . và ..
+./ls -A
+
+# Thêm ký hiệu loại file (/ * @ = |)
+./ls -F
+```
+
+#### Sắp Xếp
+
+```bash
+# Sắp xếp theo thời gian (mới nhất trước)
+./ls -t
+
+# Sắp xếp theo kích thước (lớn nhất trước)
+./ls -S
+
+# Đảo ngược thứ tự sắp xếp
+./ls -r
+
+# Không sắp xếp (theo thứ tự trong directory)
+./ls -f
+```
+
+#### Kích Thước File
+
+```bash
+# Kích thước dễ đọc (K, M, G)
 ./ls -lh
 
-# Liệt kê tất cả file bao gồm file ẩn
-./ls -la
+# Kích thước tính bằng kilobytes
+./ls -lk
 
-# Sắp xếp theo thời gian sửa đổi, mới nhất trước
-./ls -lt
-
-# Sắp xếp đảo ngược theo kích thước
-./ls -lSr
-
-# Liệt kê đệ quy
-./ls -R
-
-# Hiển thị số inode và số lượng block
-./ls -lis
-
-# Liệt kê chính thư mục, không phải nội dung
-./ls -ld /đường/dẫn/đến/thư_mục
-
-# UID/GID dạng số trong định dạng dài
-./ls -n
+# Hiển thị số block
+./ls -s
 ```
 
-### Kết Hợp Tùy Chọn
+#### Thông Tin Bổ Sung
 
-Các tùy chọn có thể được kết hợp:
 ```bash
-./ls -lah      # Định dạng dài, tất cả file, dễ đọc
-./ls -ltR      # Định dạng dài, sắp xếp theo thời gian, đệ quy
-./ls -iSr      # Hiển thị inode, sắp xếp theo kích thước (đảo ngược)
+# Hiển thị số inode
+./ls -i
+
+# Hiển thị block count
+./ls -s
+
+# Kết hợp inode + blocks + long format
+./ls -lis
+```
+
+#### Liệt Kê Đặc Biệt
+
+```bash
+# Liệt kê đệ quy (bao gồm thư mục con)
+./ls -R
+
+# Liệt kê thư mục như file (không vào trong)
+./ls -ld /etc
+./ls -ld */
+```
+
+#### Thời Gian
+
+```bash
+# Sử dụng access time (atime)
+./ls -lu
+
+# Sử dụng change time (ctime)
+./ls -lc
+
+# Sắp xếp theo atime
+./ls -ltu
+
+# Sắp xếp theo ctime
+./ls -ltc
+```
+
+### Ví Dụ Kết Hợp
+
+```bash
+# Long format + all files + human readable
+./ls -lah
+
+# Long format + sort by time + reverse
+./ls -ltr
+
+# Long format + sort by size + human readable
+./ls -lSh
+
+# All files + recursive + with indicators
+./ls -aRF
+
+# Inode + long format + sort by size
+./ls -ilS
+
+# All options combined (stress test)
+./ls -ailshRFnrtScuw
+```
+
+### Ví Dụ Thực Tế
+
+#### Xem file log mới nhất
+```bash
+./ls -lt /var/log | head
+```
+
+#### Tìm file lớn nhất
+```bash
+./ls -lSh /tmp | head
+```
+
+#### Xem tất cả file kể cả ẩn
+```bash
+./ls -la
+```
+
+#### Xem cấu trúc thư mục đầy đủ
+```bash
+./ls -R
+```
+
+#### So sánh thời gian giữa các file
+```bash
+./ls -lt *.c
+```
+
+#### Kiểm tra quyền truy cập chi tiết
+```bash
+./ls -l /etc/passwd
+```
+
+#### Xem symlink trỏ đến đâu
+```bash
+./ls -l /bin/sh
+```
+
+### Ghi Chú Quan Trọng
+
+#### Phân Biệt Với ls Hệ Thống
+
+```bash
+./ls         # Chạy chương trình của BẠN
+ls           # Chạy /bin/ls (hệ thống)
+/bin/ls      # Chạy ls hệ thống (rõ ràng)
+```
+
+#### Options Override (cái cuối thắng)
+
+```bash
+./ls -ln     # -n thắng: hiển thị numeric UID/GID
+./ls -nl     # -l thắng: hiển thị user/group names
+
+./ls -cu     # -u thắng: dùng atime
+./ls -uc     # -c thắng: dùng ctime
+
+./ls -kh     # -h thắng: human readable
+./ls -hk     # -k thắng: kilobytes
+
+./ls -Rd .   # -d thắng: list . như file
+./ls -dR .   # -R thắng: recursive
+```
+
+#### Xử Lý Lỗi
+
+```bash
+# File không tồn tại
+./ls /nonexistent
+# Output: ls: /nonexistent: No such file or directory
+# Exit code: > 0
+
+# Permission denied
+./ls /root
+# Output: ls: /root: Permission denied
+# Exit code: > 0
+
+# Success
+./ls README.md
+# Exit code: 0
 ```
 
 ## Chi Tiết Cài Đặt
@@ -185,40 +374,162 @@ Lỗi được báo cáo ra stderr với thông báo mô tả.
 
 ## Kiểm Thử
 
-### Kiểm Thử Thủ Công
+### Chạy Test Suite Tự Động
 
-Kiểm tra các tình huống khác nhau:
+Dự án có sẵn script test tự động:
 
 ```bash
-# Test liệt kê cơ bản
-./ls
-
-# Test với đường dẫn không tồn tại
-./ls /không_tồn_tại
-
-# Test từ chối quyền
-./ls /root
-
-# Test với symbolic link
-./ls -l /bin/sh
-
-# Test liệt kê đệ quy
-./ls -R /etc/systemd
-
-# Test sắp xếp
-./ls -lt /tmp
-./ls -lS /var/log
+# Chạy test suite đầy đủ
+chmod +x test_full.sh
+./test_full.sh
 ```
 
-### Các Trường Hợp Đặc Biệt
+Test suite sẽ kiểm tra:
+- ✅ Tất cả options đơn (-l, -a, -A, -h, -i, -s, -k, -t, -S, -r, -R, -d, -F, -f, -n, -c, -u, -q, -w)
+- ✅ Tổ hợp options (-la, -lh, -lt, -lS, -laR, -lis)
+- ✅ Options ghi đè nhau (-ln/-nl, -cu/-uc, -Rd/-dR, -kh/-hk, -qw/-wq)
+- ✅ Edge cases (file không tồn tại, permission denied, symlink, file đặc biệt)
+- ✅ Không segfault với input lớn
+- ✅ So sánh với ls hệ thống
 
-Bản cài đặt xử lý:
+### Kiểm Thử Thủ Công
+
+#### Test Cơ Bản
+
+```bash
+# 1. Test không tham số
+./ls
+
+# 2. Test với file cụ thể
+./ls README.md
+
+# 3. Test với directory
+./ls /etc
+
+# 4. Test với multiple paths
+./ls README.md src Makefile
+```
+
+#### Test Options
+
+```bash
+# 5. Test long format
+./ls -l
+
+# 6. Test hidden files
+./ls -a
+./ls -A
+
+# 7. Test sorting
+./ls -t    # by time
+./ls -S    # by size
+./ls -r    # reverse
+
+# 8. Test recursive
+./ls -R src
+
+# 9. Test indicators
+./ls -F
+
+# 10. Test với -d
+./ls -ld /etc
+```
+
+#### Test Edge Cases
+
+```bash
+# 11. File không tồn tại (phải trả về lỗi)
+./ls /nonexistent
+echo $?  # Phải > 0
+
+# 12. Permission denied
+./ls /root
+echo $?  # Phải > 0
+
+# 13. Symbolic link
+./ls -l /bin/sh
+# Phải hiển thị -> target
+
+# 14. Empty directory
+mkdir /tmp/empty_test
+./ls /tmp/empty_test
+rmdir /tmp/empty_test
+
+# 15. File với spaces
+touch "/tmp/test file.txt"
+./ls "/tmp/test file.txt"
+rm "/tmp/test file.txt"
+
+# 16. Large directory (không crash)
+./ls -la /usr/bin
+
+# 17. Deep recursion (không crash)
+./ls -R /usr
+```
+
+#### Test Mix File + Directory
+
+```bash
+# 18. Mix files và directories
+# Files phải hiển thị trước, directories sau
+./ls file1.txt dir1 file2.txt dir2
+
+# Expected output:
+# file1.txt
+# file2.txt
+# 
+# dir1:
+# [contents]
+# 
+# dir2:
+# [contents]
+```
+
+#### So Sánh Với ls Hệ Thống
+
+```bash
+# So sánh output
+echo "=== System ls ==="
+/bin/ls -l
+
+echo "=== Your ls ==="
+./ls -l
+
+# So sánh với diff
+/bin/ls -l > /tmp/sys.txt
+./ls -l > /tmp/mine.txt
+diff /tmp/sys.txt /tmp/mine.txt
+```
+
+### Các Trường Hợp Đã Test
+
+✅ **Đã xử lý:**
 - Thư mục rỗng
-- Symbolic link
-- Device file
+- Symbolic link (cả đúng và broken)
+- Device files
 - File có ký tự đặc biệt trong tên
-- Thư mục lớn
-- Các loại file hỗn hợp
+- File có spaces trong tên
+- Thư mục lớn (>1000 files)
+- Deep recursion
+- Permission denied
+- File/directory không tồn tại
+- Mix files và directories
+- Tất cả options và tổ hợp
+
+### Expected Exit Codes
+
+```bash
+# Success (exit 0)
+./ls README.md
+echo $?  # 0
+
+# Error (exit > 0)
+./ls /nonexistent
+echo $?  # 1 hoặc 2
+
+./ls /root  # nếu không có quyền
+echo $?  # 1 hoặc 2
+```
 
 ## Hạn Chế
 
