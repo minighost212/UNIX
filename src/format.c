@@ -93,10 +93,16 @@ void format_size_human(off_t size, char *buf, size_t bufsize) {
 /**
  * Định dạng số lượng block cho tùy chọn -s
  */
-void format_size_blocks(blkcnt_t blocks, int kilobytes, char *buf, size_t bufsize) {
-    if (kilobytes) {
+void format_size_blocks(blkcnt_t blocks, SizeMode mode, char *buf, size_t bufsize) {
+    if (mode == SIZE_KB) {
+        /* -k: hiển thị theo kilobyte (chia 2) */
         snprintf(buf, bufsize, "%lld", (long long)(blocks / 2));
+    } else if (mode == SIZE_HUMAN) {
+        /* -h: hiển thị human-readable dựa trên số byte (blocks * 512) */
+        off_t bytes = blocks * 512;
+        format_size_human(bytes, buf, bufsize);
     } else {
+        /* Mặc định: 512-byte blocks */
         snprintf(buf, bufsize, "%lld", (long long)blocks);
     }
 }
@@ -169,14 +175,25 @@ blkcnt_t calculate_total_blocks(FileEntry **entries, int count) {
 void print_file_name(FileEntry *entry, Options *opts) {
     const char *name = entry->name;
     char indicator = '\0';
+    int use_question_mark;
     
     /* Lấy ký tự chỉ báo loại file nếu -F được chỉ định */
     if (opts->flag_F) {
         indicator = get_file_indicator(entry->st.st_mode);
     }
     
+    /* Quyết định có thay thế ký tự không in được bằng '?' hay không */
+    if (opts->print_mode == PRINT_QUESTION) {
+        use_question_mark = 1;  /* -q: bắt buộc dùng ? */
+    } else if (opts->print_mode == PRINT_RAW) {
+        use_question_mark = 0;  /* -w: bắt buộc in thô */
+    } else {
+        /* PRINT_DEFAULT: tự động dựa trên isatty() */
+        use_question_mark = isatty(STDOUT_FILENO);
+    }
+    
     /* Xử lý các ký tự không in được */
-    if (opts->flag_q) {
+    if (use_question_mark) {
         /* Thay thế ký tự không in được bằng '?' */
         while (*name) {
             if (*name >= 32 && *name <= 126) {
@@ -217,7 +234,7 @@ void print_long_format(FileEntry *entry, Options *opts) {
     
     /* In số lượng block nếu -s được chỉ định */
     if (opts->flag_s) {
-        format_size_blocks(entry->blocks, opts->flag_k, blocks_buf, sizeof(blocks_buf));
+        format_size_blocks(entry->blocks, opts->size_mode, blocks_buf, sizeof(blocks_buf));
         printf("%6s ", blocks_buf);
     }
     
@@ -231,7 +248,7 @@ void print_long_format(FileEntry *entry, Options *opts) {
     nlink_t nlinks = entry->st.st_nlink;
     
     /* Chủ sở hữu và nhóm */
-    if (opts->flag_n) {
+    if (opts->long_format == MODE_N) {
         /* ID dạng số */
         snprintf(user_buf, sizeof(user_buf), "%u", entry->st.st_uid);
         snprintf(group_buf, sizeof(group_buf), "%u", entry->st.st_gid);
@@ -246,17 +263,17 @@ void print_long_format(FileEntry *entry, Options *opts) {
         snprintf(size_buf, sizeof(size_buf), "%3u, %3u", 
                  major(entry->st.st_rdev), minor(entry->st.st_rdev));
     } else {
-        if (opts->flag_h) {
+        if (opts->size_mode == SIZE_HUMAN) {
             format_size_human(entry->size, size_buf, sizeof(size_buf));
         } else {
             snprintf(size_buf, sizeof(size_buf), "%lld", (long long)entry->size);
         }
     }
     
-    /* Thời gian - sử dụng thời gian phù hợp dựa trên flag -c hoặc -u */
-    if (opts->flag_c) {
+    /* Thời gian - sử dụng thời gian phù hợp dựa trên time_mode */
+    if (opts->time_mode == TIME_CTIME) {
         display_time = entry->ctime;
-    } else if (opts->flag_u) {
+    } else if (opts->time_mode == TIME_ATIME) {
         display_time = entry->atime;
     } else {
         display_time = entry->mtime;
@@ -297,7 +314,7 @@ void print_short_format(FileEntry *entry, Options *opts) {
     
     /* In số lượng block nếu -s được chỉ định */
     if (opts->flag_s) {
-        format_size_blocks(entry->blocks, opts->flag_k, blocks_buf, sizeof(blocks_buf));
+        format_size_blocks(entry->blocks, opts->size_mode, blocks_buf, sizeof(blocks_buf));
         printf("%6s ", blocks_buf);
     }
     

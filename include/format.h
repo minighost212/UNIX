@@ -16,7 +16,7 @@ char get_file_indicator(mode_t mode);
 
 /* Size formatting */
 void format_size_human(off_t size, char *buf, size_t bufsize);
-void format_size_blocks(blkcnt_t blocks, int kilobytes, char *buf, size_t bufsize);
+void format_size_blocks(blkcnt_t blocks, SizeMode mode, char *buf, size_t bufsize);
 
 /* Time formatting */
 void format_time(time_t time, char *buf, size_t bufsize);

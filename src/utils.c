@@ -65,12 +65,12 @@ void sort_entries(FileEntry **entries, int count, Options *opts) {
     /* Chọn hàm so sánh dựa trên options */
     if (opts->flag_t) {
         /* Sắp xếp theo thời gian - cần chọn trường thời gian nào */
-        if (opts->flag_c) {
+        if (opts->time_mode == TIME_CTIME) {
             /* Sử dụng ctime để sắp xếp */
             for (int i = 0; i < count; i++) {
                 entries[i]->mtime = entries[i]->ctime;
             }
-        } else if (opts->flag_u) {
+        } else if (opts->time_mode == TIME_ATIME) {
             /* Sử dụng atime để sắp xếp */
             for (int i = 0; i < count; i++) {
                 entries[i]->mtime = entries[i]->atime;

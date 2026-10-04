@@ -140,7 +140,7 @@ int list_file(const char *path, Options *opts) {
     }
     
     /* In dựa trên định dạng */
-    if (opts->flag_l || opts->flag_n) {
+    if (opts->long_format != MODE_NONE) {
         print_long_format(entry, opts);
     } else {
         print_short_format(entry, opts);
@@ -171,10 +171,10 @@ int list_directory(const char *path, Options *opts) {
     }
     
     /* Tính tổng số block cho định dạng dài */
-    if ((opts->flag_l || opts->flag_s) && count > 0) {
+    if ((opts->long_format != MODE_NONE || opts->flag_s) && count > 0) {
         total_blocks = calculate_total_blocks(entries, count);
         
-        if (opts->flag_k) {
+        if (opts->size_mode == SIZE_KB) {
             printf("total %lld\n", (long long)(total_blocks / 2));
         } else {
             printf("total %lld\n", (long long)total_blocks);
@@ -183,7 +183,7 @@ int list_directory(const char *path, Options *opts) {
     
     /* Hiển thị các entry */
     for (i = 0; i < count; i++) {
-        if (opts->flag_l || opts->flag_n) {
+        if (opts->long_format != MODE_NONE) {
             print_long_format(entries[i], opts);
         } else {
             print_short_format(entries[i], opts);
@@ -227,7 +227,7 @@ int do_ls(const char *path, Options *opts) {
     }
     
     /* Nếu -d được chỉ định hoặc path không phải thư mục, liệt kê như file */
-    if (opts->flag_d || !S_ISDIR(st.st_mode)) {
+    if (opts->dir_mode == DIR_ENTRY || !S_ISDIR(st.st_mode)) {
         return list_file(path, opts);
     }
     

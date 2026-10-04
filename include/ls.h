@@ -9,27 +9,32 @@
 /* Maximum path length */
 #define MAX_PATH 4096
 
+/* Enums for mutually-exclusive option pairs */
+typedef enum { MODE_NONE, MODE_L, MODE_N } LongFormatMode;
+typedef enum { TIME_MTIME, TIME_CTIME, TIME_ATIME } TimeMode;
+typedef enum { DIR_LIST, DIR_ENTRY } DirectoryMode;
+typedef enum { SIZE_BLOCKS, SIZE_KB, SIZE_HUMAN } SizeMode;
+typedef enum { PRINT_DEFAULT, PRINT_QUESTION, PRINT_RAW } PrintMode;
+
 /* Command line options structure */
 typedef struct {
     int flag_A;      /* List all except . and .. */
     int flag_a;      /* Include entries starting with . */
-    int flag_c;      /* Use time of last status change */
-    int flag_d;      /* List directories as plain files */
     int flag_F;      /* Append indicator (/, *, @, etc.) */
     int flag_f;      /* Output is not sorted */
-    int flag_h;      /* Human readable sizes */
     int flag_i;      /* Print inode number */
-    int flag_k;      /* Sizes in kilobytes */
-    int flag_l;      /* Long format */
-    int flag_n;      /* Numeric UIDs and GIDs */
-    int flag_q;      /* Force printing of non-printable as ? */
-    int flag_R;      /* Recursively list subdirectories */
     int flag_r;      /* Reverse sort order */
     int flag_S;      /* Sort by size */
     int flag_s;      /* Display block count */
     int flag_t;      /* Sort by modification time */
-    int flag_u;      /* Use access time instead of modification */
-    int flag_w;      /* Raw printing of non-printable */
+    int flag_R;      /* Recursively list subdirectories */
+    
+    /* Mutually-exclusive option pairs (last one wins) */
+    LongFormatMode long_format;  /* -l/-n */
+    TimeMode time_mode;          /* -c/-u (default: mtime) */
+    DirectoryMode dir_mode;      /* -R/-d */
+    SizeMode size_mode;          /* -k/-h (default: 512-byte blocks) */
+    PrintMode print_mode;        /* -q/-w */
 } Options;
 
 /* File entry structure for sorting and display */
