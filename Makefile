@@ -30,7 +30,7 @@ all: $(TARGET)
 
 # Link object files to create executable
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
 	@echo "Build successful! Executable: $(TARGET)"
 
 # Compile source files to object files
