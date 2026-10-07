@@ -20,7 +20,7 @@ int compare_lexical(const void *a, const void *b) {
  * So sánh các entry theo thời gian sửa đổi (mới nhất trước)
  * Sử dụng thời gian được chỉ định bởi time_mode
  */
-static TimeMode global_time_mode = TIME_MTIME;
+TimeMode global_time_mode = TIME_MTIME;
 
 int compare_time(const void *a, const void *b) {
     FileEntry *entry_a = *(FileEntry **)a;
