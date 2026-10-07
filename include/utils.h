@@ -3,6 +3,9 @@
 
 #include "ls.h"
 
+/* Global variable for time comparison mode */
+extern TimeMode global_time_mode;
+
 /* Sorting functions */
 void sort_entries(FileEntry **entries, int count, Options *opts);
 int compare_lexical(const void *a, const void *b);

@@ -18,14 +18,30 @@ int compare_lexical(const void *a, const void *b) {
 
 /**
  * So sánh các entry theo thời gian sửa đổi (mới nhất trước)
+ * Sử dụng thời gian được chỉ định bởi time_mode
  */
+static TimeMode global_time_mode = TIME_MTIME;
+
 int compare_time(const void *a, const void *b) {
     FileEntry *entry_a = *(FileEntry **)a;
     FileEntry *entry_b = *(FileEntry **)b;
+    time_t time_a, time_b;
+    
+    /* Chọn trường thời gian dựa trên time_mode */
+    if (global_time_mode == TIME_CTIME) {
+        time_a = entry_a->ctime;
+        time_b = entry_b->ctime;
+    } else if (global_time_mode == TIME_ATIME) {
+        time_a = entry_a->atime;
+        time_b = entry_b->atime;
+    } else {
+        time_a = entry_a->mtime;
+        time_b = entry_b->mtime;
+    }
     
     /* So sánh thời gian - file mới hơn đứng trước */
-    if (entry_a->mtime > entry_b->mtime) return -1;
-    if (entry_a->mtime < entry_b->mtime) return 1;
+    if (time_a > time_b) return -1;
+    if (time_a < time_b) return 1;
     
     /* Nếu thời gian bằng nhau, so sánh theo tên */
     return strcmp(entry_a->name, entry_b->name);
@@ -64,18 +80,8 @@ void sort_entries(FileEntry **entries, int count, Options *opts) {
     
     /* Chọn hàm so sánh dựa trên options */
     if (opts->flag_t) {
-        /* Sắp xếp theo thời gian - cần chọn trường thời gian nào */
-        if (opts->time_mode == TIME_CTIME) {
-            /* Sử dụng ctime để sắp xếp */
-            for (int i = 0; i < count; i++) {
-                entries[i]->mtime = entries[i]->ctime;
-            }
-        } else if (opts->time_mode == TIME_ATIME) {
-            /* Sử dụng atime để sắp xếp */
-            for (int i = 0; i < count; i++) {
-                entries[i]->mtime = entries[i]->atime;
-            }
-        }
+        /* Sắp xếp theo thời gian - cập nhật time_mode toàn cục */
+        global_time_mode = opts->time_mode;
         compare_func = compare_time;
     } else if (opts->flag_S) {
         compare_func = compare_size;
