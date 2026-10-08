@@ -118,6 +118,12 @@ Sau khi build thành công bằng `make`, bạn có file thực thi `ls` trong t
 ./ls /bin/ls                            # liệt kê file hệ thống
 ./ls Makefile README.md src include     # liệt kê nhiều đường dẫn
 ./ls file1.txt /tmp /etc file2.txt      # mix files và directories (files hiển thị trước)
+# Một số tùy chọn hay dùng với -l
+./ls -la                                # xem chi tiết, hiện cả file ẩn (gồm . và ..)
+./ls -lA                                # xem chi tiết, hiện file ẩn nhưng bỏ . và ..
+./ls -ls                                # xem chi tiết, thêm cột số block đĩa
+./ls -lS                                # xem chi tiết, sắp xếp theo kích thước
+./ls -lt                                # xem chi tiết, file sửa đổi mới nhất lên đầu
 ```
 
 ### Ví Dụ Sử Dụng
